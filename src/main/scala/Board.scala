@@ -9,24 +9,27 @@ case class Board(var positions: List[List[Pos]] = emptyBoard) {
 
   def full() = !positions.flatten.contains(None)
 
-  def won(): Option[Player] = (winFor(playerPositions(X)), winFor(playerPositions(O))) match {
+  def won(): Option[Player] = (didPlayerWin(X), didPlayerWin(O)) match {
     case (true, _) => Some(X)
     case (_, true) => Some(O)
     case _ => None
   }
 
+  private val didPlayerWin = winFor _ compose playerPositions _
+
   def winFor(playerPositions: PlayerPositions): Boolean = {
-    for (win <- winningPositions) {
-      if (win.subsetOf(playerPositions)) {
-        return true
-      }
+    winningPositions.filter(_ subsetOf playerPositions).toSeq match {
+      case Nil => false
+      case _ => true
     }
-    return false
   }
 
-  def playerPositions(player: Player): PlayerPositions = player match {
-    case X => positions.flatten.zipWithIndex.collect{ case (Some(X), i) => i}.toSet
-    case O => positions.flatten.zipWithIndex.collect{ case (Some(O), i) => i}.toSet
+  def playerPositions(player: Player): PlayerPositions = {
+    val flattenedBoard = positions.flatten.zipWithIndex
+    player match {
+      case X => flattenedBoard.collect{ case (Some(X), i) => i}.toSet
+      case O => flattenedBoard.collect{ case (Some(O), i) => i}.toSet
+    }
   }
 
 }
