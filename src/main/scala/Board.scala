@@ -20,7 +20,7 @@ case class Board(var positions: List[List[Pos]] = emptyBoard) {
   def winFor(playerPositions: PlayerPositions): Boolean = {
     winningPositions.filter(_ subsetOf playerPositions).toSeq match {
       case Nil => false
-      case _ => true
+      case _   => true
     }
   }
 
@@ -31,6 +31,17 @@ case class Board(var positions: List[List[Pos]] = emptyBoard) {
       case O => flattenedBoard.collect{ case (Some(O), i) => i}.toSet
     }
   }
+
+  override def toString(): String =
+    positions.map(_.map(squareToString) mkString " ") mkString "\n"
+
+  def squareToString(player: Option[Player]): String = player match {
+    case Some(X) => "X"
+    case Some(O) => "O"
+    case _       => " "
+  }
+
+
 
 }
 
