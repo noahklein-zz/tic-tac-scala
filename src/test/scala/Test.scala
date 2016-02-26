@@ -31,4 +31,12 @@ class BoardTest extends FlatSpec {
     assert(testBoard.playerPositions(O) == Set(1, 4, 5, 7, 8))
     assert(testBoard.playerPositions(X) == Set(2, 3, 6))
   }
+  "board.toString" should "be \nO X O\nO   X\nX O  " in {
+    val board = List(
+      List(Some(O), Some(X), Some(O)),
+      List(Some(O), None, Some(X)),
+      List(Some(X), Some(O), None))
+    val testBoard = new Board(board)
+    assert(testBoard.toString == "O X O\nO   X\nX O  ")
+  }
 }
