@@ -40,9 +40,6 @@ case class Board(var positions: List[List[Pos]] = emptyBoard) {
     case Some(O) => "O"
     case _       => " "
   }
-
-
-
 }
 
 
