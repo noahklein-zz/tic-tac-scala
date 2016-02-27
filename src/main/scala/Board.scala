@@ -12,7 +12,7 @@ case class Board(var positions: List[List[Pos]] = emptyBoard) {
   def won(): Option[Player] = (didPlayerWin(X), didPlayerWin(O)) match {
     case (true, _) => Some(X)
     case (_, true) => Some(O)
-    case _ => None
+    case _  => None
   }
 
   private val didPlayerWin = winFor _ compose playerPositions _
@@ -34,12 +34,6 @@ case class Board(var positions: List[List[Pos]] = emptyBoard) {
 
   override def toString(): String =
     positions.map(_.map(squareToString) mkString " ") mkString "\n"
-
-  def squareToString(player: Option[Player]): String = player match {
-    case Some(X) => "X"
-    case Some(O) => "O"
-    case _       => " "
-  }
 }
 
 
@@ -57,4 +51,10 @@ object Board {
       Set(2, 5, 8),
       Set(0, 4, 8),
       Set(2, 4, 6))
+
+  def squareToString(player: Option[Player]): String = player match {
+    case Some(X) => "X"
+    case Some(O) => "O"
+    case _ => " "
+  }
 }
