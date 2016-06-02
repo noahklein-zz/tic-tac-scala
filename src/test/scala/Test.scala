@@ -1,4 +1,4 @@
-package com.tictactoe
+package tictactoe
 
 import org.scalatest._
 import Board._
@@ -30,15 +30,23 @@ class BoardTest extends FlatSpec {
     assert(testBoard.playerPositions(X) == Set(2, 3, 6))
   }
 
-  "board.toString" should "be \nO X O\nO   X\nX O  " in {
+  "emptyPositions" should "be Set(0, 4, 7)" in {
+    val board = List(None, Some(O), Some(X),
+                     Some(X), None, Some(O),
+                     Some(X), None, Some(O))
+    val testBoard = new Board(board)
+    assert(testBoard.emptyPositions == Set(0, 4, 7))
+  }
+
+  "board.toString" should "be \nO X O\nO 5 X\nX O 9" in {
     val board = List(Some(O), Some(X), Some(O),
                      Some(O), None, Some(X),
                      Some(X), Some(O), None)
     val testBoard = new Board(board)
-    assert(testBoard.toString == "O X O\nO   X\nX O  ")
+    assert(testBoard.toString == "O X O\nO 5 X\nX O 9")
   }
 
-  "updatedBoard" should "be a" {
+  "updatedBoard" should "be a" in {
     val board = new Board()
     val newBoard = board.makeMove(new Move(X, 3))
     val modifiedBoard = List(None, None, None,
