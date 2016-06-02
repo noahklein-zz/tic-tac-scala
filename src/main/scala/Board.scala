@@ -1,39 +1,44 @@
-package com.tictactoe
+package tictactoe
 
 trait Player
 case object X extends Player
 case object O extends Player
 
 import Board._
-case class Board(var positions: List[List[Pos]] = emptyBoard) {
 
-  def full() = !positions.flatten.contains(None)
+case class Move(player: Player, pos: Int)
 
-  def won(): Option[Player] = (didPlayerWin(X), didPlayerWin(O)) match {
+case class Board(val positions: List[Pos] = emptyBoard) {
+  
+  def full = !positions.flatten.contains(None)
+
+  private val didPlayerWin = winFor _ compose playerPositions _
+
+  def won: Option[Player] = (didPlayerWin(X), didPlayerWin(O)) match {
     case (true, _) => Some(X)
     case (_, true) => Some(O)
     case _  => None
   }
 
-  private val didPlayerWin = winFor _ compose playerPositions _
+  def winFor(playerPositions: PlayerPositions): Boolean =
+    !winningPositions.filter(_ subsetOf playerPositions).isEmpty
 
-  def winFor(playerPositions: PlayerPositions): Boolean = {
-    winningPositions.filter(_ subsetOf playerPositions).toSeq match {
-      case Nil => false
-      case _   => true
-    }
+  def makeMove(move: Move): Board = move.player match {
+    case X => new Board(positions.updated(move.pos, Some(X)))
+    case O => new Board(positions.updated(move.pos, Some(O)))
   }
 
-  def playerPositions(player: Player): PlayerPositions = {
-    val flattenedBoard = positions.flatten.zipWithIndex
-    player match {
-      case X => flattenedBoard.collect{ case (Some(X), i) => i}.toSet
-      case O => flattenedBoard.collect{ case (Some(O), i) => i}.toSet
-    }
+  def playerPositions(player: Player): PlayerPositions = player match {
+    case X => positions.zipWithIndex.collect{ case (Some(X), i) => i}.toSet
+    case O => positions.zipWithIndex.collect{ case (Some(O), i) => i}.toSet
   }
 
-  override def toString(): String =
-    positions.map(_.map(squareToString) mkString " ") mkString "\n"
+  def emptyPositions: PlayerPositions = positions.zipWithIndex.collect{ case (None, i) => i}.toSet
+
+  override def toString: String = {
+    val boardMatrix = positions.zipWithIndex.grouped(3).toList
+    boardMatrix.map(_.map(squareToString) mkString " ") mkString "\n"
+  }
 }
 
 
@@ -41,7 +46,7 @@ object Board {
   type Pos = Option[Player]
   type PlayerPositions = Set[Int]
 
-  val emptyBoard: List[List[Pos]] = List.fill(3)(List.fill(3)(None))
+  val emptyBoard: List[Pos] = List.fill(9)(None)
   val winningPositions = Set(
       Set(0, 1, 2),
       Set(3, 4, 5),
@@ -52,9 +57,9 @@ object Board {
       Set(0, 4, 8),
       Set(2, 4, 6))
 
-  def squareToString(player: Option[Player]): String = player match {
-    case Some(X) => "X"
-    case Some(O) => "O"
-    case _ => " "
+  def squareToString: Tuple2[Pos, Int] => String = _ match {
+    case (Some(X), _) => "X"
+    case (Some(O), _) => "O"
+    case (_, i) => (i + 1) toString
   }
 }
