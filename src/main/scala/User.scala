@@ -4,7 +4,6 @@ import java.util.Random
 
 import HumanPlayer._
 
-
 abstract class User {
   val id: Player
   def getMove(board: Board): Move
@@ -37,10 +36,5 @@ case class RobotPlayer(id: Player) extends User {
     val randIndex = rand.nextInt(positions.length)
     Move(id, positions(randIndex))
   }
-
-
-    // def score(board: Board): Int = {
-
-    // }
-
-  }
+  // def score(board: Board): Int = { }
+}
