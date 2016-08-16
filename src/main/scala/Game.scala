@@ -1,8 +1,6 @@
 package tictactoe
 
-
 import Game._
-
 
 case class Game(var board: Board = new Board()) {
   val xPlayer = new HumanPlayer(X)
@@ -20,7 +18,6 @@ case class Game(var board: Board = new Board()) {
     println(gameOverMessage(board.won))
   }
 }
-
 
 object Game {
 
